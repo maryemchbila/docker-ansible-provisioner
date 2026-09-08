@@ -9,6 +9,38 @@ A reusable and idempotent provisioning lab that uses Ansible and Docker containe
 - YAML
 - Git
 
+## Docker Lab
+
+Build the shared target image and start all three containers:
+
+```bash
+docker compose -f docker/docker-compose.yml up --build -d
+```
+
+List the lab containers:
+
+```bash
+docker compose -f docker/docker-compose.yml ps
+```
+
+Enter a container (replace `ansible-node1` with another node when needed):
+
+```bash
+docker exec -it ansible-node1 bash
+```
+
+Stop the lab without removing its containers:
+
+```bash
+docker compose -f docker/docker-compose.yml stop
+```
+
+Destroy the lab containers and network:
+
+```bash
+docker compose -f docker/docker-compose.yml down
+```
+
 ## Status
 
 Work in Progress
