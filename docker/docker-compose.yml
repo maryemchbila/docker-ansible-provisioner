@@ -1,0 +1,38 @@
+services:
+  ansible-node1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: docker-ansible-provisioner-node:latest
+    container_name: ansible-node1
+    hostname: node1
+    restart: unless-stopped
+    networks:
+      - ansible-lab
+
+  ansible-node2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: docker-ansible-provisioner-node:latest
+    container_name: ansible-node2
+    hostname: node2
+    restart: unless-stopped
+    networks:
+      - ansible-lab
+
+  ansible-node3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: docker-ansible-provisioner-node:latest
+    container_name: ansible-node3
+    hostname: node3
+    restart: unless-stopped
+    networks:
+      - ansible-lab
+
+networks:
+  ansible-lab:
+    name: ansible-lab
+    driver: bridge
