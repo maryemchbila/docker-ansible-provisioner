@@ -7,7 +7,6 @@ RUN apt-get update \
         ca-certificates \
         curl \
         python3 \
-        sudo \
     && rm -rf /var/lib/apt/lists/*
 
 CMD ["sleep", "infinity"]

@@ -1,0 +1,6 @@
+---
+- name: Start Docker daemon
+  ansible.builtin.shell: >-
+    nohup {{ docker_setup_daemon_binary | quote }}
+    > {{ docker_setup_daemon_log | quote }} 2>&1 &
+  changed_when: true

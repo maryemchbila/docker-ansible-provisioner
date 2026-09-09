@@ -1,0 +1,15 @@
+---
+docker_setup_prerequisite_packages:
+  - ca-certificates
+  - curl
+
+docker_setup_packages:
+  - docker.io
+
+docker_setup_users:
+  - "{{ app_user | default('appuser') }}"
+
+docker_setup_daemon_binary: /usr/bin/dockerd
+docker_setup_daemon_log: /var/log/dockerd.log
+docker_setup_daemon_retries: 30
+docker_setup_daemon_retry_delay: 2
