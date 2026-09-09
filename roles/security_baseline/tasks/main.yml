@@ -1,0 +1,32 @@
+---
+- name: Update the APT package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install baseline administration packages
+  ansible.builtin.apt:
+    name: "{{ security_baseline_packages }}"
+    state: present
+
+- name: Create the application group
+  ansible.builtin.group:
+    name: "{{ app_group }}"
+    state: present
+
+- name: Create the non-root application user
+  ansible.builtin.user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    home: "{{ app_home }}"
+    create_home: true
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Create the application directory with secure permissions
+  ansible.builtin.file:
+    path: "{{ app_directory }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0750"
