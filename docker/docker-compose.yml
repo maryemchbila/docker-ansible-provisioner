@@ -6,6 +6,7 @@ services:
     image: docker-ansible-provisioner-node:latest
     container_name: ansible-node1
     hostname: node1
+    privileged: true
     restart: unless-stopped
     networks:
       - ansible-lab
@@ -17,6 +18,7 @@ services:
     image: docker-ansible-provisioner-node:latest
     container_name: ansible-node2
     hostname: node2
+    privileged: true
     restart: unless-stopped
     networks:
       - ansible-lab
@@ -28,6 +30,7 @@ services:
     image: docker-ansible-provisioner-node:latest
     container_name: ansible-node3
     hostname: node3
+    privileged: true
     restart: unless-stopped
     networks:
       - ansible-lab

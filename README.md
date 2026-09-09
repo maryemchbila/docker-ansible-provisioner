@@ -11,6 +11,12 @@ A reusable and idempotent provisioning lab that uses Ansible and Docker containe
 
 ## Docker Lab
 
+This is a local educational Docker-in-Docker lab. Each simulated target runs
+in privileged mode so that a nested Docker daemon can access the kernel
+features it requires. Privileged containers have broad access to the host and
+must not be treated as a production security pattern. Use isolated hosts and a
+properly designed container runtime architecture for production workloads.
+
 Build the shared target image and start all three containers:
 
 ```bash

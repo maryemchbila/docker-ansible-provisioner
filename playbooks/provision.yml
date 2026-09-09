@@ -5,3 +5,4 @@
 
   roles:
     - role: security_baseline
+    - role: docker_setup

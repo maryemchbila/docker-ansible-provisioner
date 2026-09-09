@@ -1,0 +1,44 @@
+---
+- name: Install Docker prerequisite packages
+  ansible.builtin.apt:
+    name: "{{ docker_setup_prerequisite_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install Docker Engine packages
+  ansible.builtin.apt:
+    name: "{{ docker_setup_packages }}"
+    state: present
+
+- name: Add configured users to the Docker group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups:
+      - docker
+    append: true
+  loop: "{{ docker_setup_users }}"
+
+- name: Check whether the Docker daemon is already running
+  ansible.builtin.command:
+    argv:
+      - docker
+      - info
+  register: docker_setup_initial_info
+  changed_when: docker_setup_initial_info.rc != 0
+  failed_when: false
+  notify: Start Docker daemon
+
+- name: Run pending Docker daemon handler
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for the Docker daemon and verify Docker availability
+  ansible.builtin.command:
+    argv:
+      - docker
+      - info
+  register: docker_setup_info
+  changed_when: false
+  retries: "{{ docker_setup_daemon_retries }}"
+  delay: "{{ docker_setup_daemon_retry_delay }}"
+  until: docker_setup_info.rc == 0
