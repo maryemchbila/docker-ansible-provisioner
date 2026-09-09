@@ -1,0 +1,9 @@
+---
+security_baseline_packages:
+  - ca-certificates
+  - curl
+
+app_user: appuser
+app_group: appgroup
+app_home: /home/appuser
+app_directory: /opt/apps
