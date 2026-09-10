@@ -19,14 +19,43 @@
     append: true
   loop: "{{ docker_setup_users }}"
 
+- name: Ensure Docker configuration directory exists
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Configure Docker for nested container storage
+  ansible.builtin.copy:
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {
+        "features": {
+          "containerd-snapshotter": false
+        },
+        "storage-driver": "vfs"
+      }
+  notify: Restart Docker daemon
+
 - name: Check whether the Docker daemon is already running
   ansible.builtin.command:
     argv:
       - docker
       - info
   register: docker_setup_initial_info
-  changed_when: docker_setup_initial_info.rc != 0
+  changed_when: false
   failed_when: false
+
+- name: Request Docker daemon startup when unavailable
+  ansible.builtin.debug:
+    msg: Docker daemon is unavailable and will be started.
+  changed_when: true
+  when: docker_setup_initial_info.rc != 0
   notify: Start Docker daemon
 
 - name: Run pending Docker daemon handler
