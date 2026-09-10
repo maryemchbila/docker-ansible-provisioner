@@ -1,6 +1,26 @@
 ---
+- name: Stop Docker daemon for configuration restart
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/pkill
+      - --exact
+      - dockerd
+  register: docker_setup_stop
+  changed_when: docker_setup_stop.rc == 0
+  failed_when: docker_setup_stop.rc not in [0, 1]
+  listen: Restart Docker daemon
+
+- name: Wait for Docker daemon socket removal
+  ansible.builtin.wait_for:
+    path: /var/run/docker.sock
+    state: absent
+    timeout: "{{ docker_setup_daemon_stop_timeout }}"
+  changed_when: false
+  listen: Restart Docker daemon
+
 - name: Start Docker daemon
   ansible.builtin.shell: >-
     nohup {{ docker_setup_daemon_binary | quote }}
     > {{ docker_setup_daemon_log | quote }} 2>&1 &
   changed_when: true
+  listen: Restart Docker daemon

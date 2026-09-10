@@ -3,6 +3,10 @@
   hosts: ansible_targets
   gather_facts: true
 
+  vars_files:
+    - ../vars/app_config.yml
+
   roles:
     - role: security_baseline
     - role: docker_setup
+    - role: app_deploy

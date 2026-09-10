@@ -1,0 +1,41 @@
+---
+- name: Validate that the application mapping exists
+  ansible.builtin.assert:
+    that:
+      - application is defined
+      - application is mapping
+    fail_msg: application must be defined as a mapping.
+
+- name: Validate the application deployment values
+  ansible.builtin.assert:
+    that:
+      - application.name is defined
+      - application.name | string | length > 0
+      - application.image is defined
+      - application.image | string | length > 0
+      - application.host_port is defined
+      - application.host_port | int > 0
+      - application.host_port | int <= 65535
+      - application.container_port is defined
+      - application.container_port | int > 0
+      - application.container_port | int <= 65535
+      - application.restart_policy is defined
+      - application.restart_policy in ['no', 'on-failure', 'always', 'unless-stopped']
+    fail_msg: >-
+      application must define a non-empty name and image, valid host_port and
+      container_port values, and a supported restart_policy.
+
+- name: Pull the requested application image
+  community.docker.docker_image:
+    name: "{{ application.image }}"
+    source: pull
+  when: app_deploy_pull_image | bool
+
+- name: Create and start the application container
+  community.docker.docker_container:
+    name: "{{ application.name }}"
+    image: "{{ application.image }}"
+    state: started
+    restart_policy: "{{ application.restart_policy }}"
+    published_ports:
+      - "{{ application.host_port }}:{{ application.container_port }}"
